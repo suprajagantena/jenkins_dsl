@@ -1,0 +1,17 @@
+node(){
+
+    stage('checkout')
+    {
+            checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '<gitCredentials>', url: 'https://github.com/DevopsMG/SpringProjectforCICD']]]
+    }
+
+    stage('build artifact')
+    {
+            echo 'using maven to build the artifact'
+            sh script: """
+                mvn clean package
+                cp target/ebstack-0.0.1-SNAPSHOT.jar /home/devopsuser/
+                java -jar /home/devopsuser/ebstack-0.0.1-SNAPSHOT.jar
+            """
+    }
+}
